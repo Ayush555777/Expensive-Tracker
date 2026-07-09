@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Dashboard — Expense Tracker</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+
+  <!-- Chart.js + jsPDF -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="page-dashboard">
+
+  <div class="app-shell">
+    <nav class="sidebar glass">
+      <div class="sidebar-header text-center py-4">
+        <!-- inline SVG default avatar -->
+        <img id="avatar" class="user-avatar" src="data:image/svg+xml;utf8,
+          <svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'>
+            <rect width='100%' height='100%' fill='%237b5fff'/>
+            <text x='50%' y='55%' fill='white' font-size='90' font-family='Arial' dominant-baseline='middle' text-anchor='middle'>U</text>
+          </svg>"
+        alt="avatar" />
+        <h5 id="displayName">User</h5>
+        <small id="displayRole">Member</small>
+      </div>
+
+      <ul class="nav flex-column sidebar-nav px-2">
+        <li><a href="#" class="nav-link active" data-section="dashboardSection"><i class="fa fa-home me-2"></i> Dashboard</a></li>
+        <li><a href="#" class="nav-link" data-section="profileSection"><i class="fa fa-user me-2"></i> Profile</a></li>
+        <li><a href="#" class="nav-link" data-section="settingsSection"><i class="fa fa-cog me-2"></i> Settings</a></li>
+        <li><a href="#" class="nav-link" data-section="billSection"><i class="fa fa-users me-2"></i> Bill Splitter</a></li>
+
+        <li class="mt-auto px-2 d-grid gap-2">
+          <button id="exportPdf" class="btn btn-outline-primary">Export PDF</button>
+          <button id="exportCsv" class="btn btn-outline-secondary">Export CSV</button>
+          <button id="logout" class="btn btn-danger">Logout</button>
+        </li>
+      </ul>
+    </nav>
+
+    <main class="main-content">
+      <div class="container-fluid p-4">
+
+        <!-- DASHBOARD -->
+        <section id="dashboardSection">
+          <div class="d-flex align-items-center justify-content-between mb-4">
+            <h2 class="mb-0">Hello, <span id="greetName">User</span></h2>
+            <div class="controls d-flex gap-2">
+              <button id="addExpenseBtn" class="btn btn-primary">+ Add Expense</button>
+              <button id="quickAddBorrow" class="btn btn-outline-warning">+ Borrow</button>
+            </div>
+          </div>
+
+          <div class="row g-4 mb-4">
+            <div class="col-md-4">
+              <div class="info-card gradient-blue animate-fade-up">
+                <small>Monthly Salary</small>
+                <h3 id="salaryDisplay">₹0</h3>
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <div class="info-card gradient-pink animate-fade-up delay-1">
+                <small>Total Expenses</small>
+                <h3 id="totalDisplay">₹0</h3>
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <div class="info-card gradient-green animate-fade-up delay-2">
+                <small>Amount Left</small>
+                <h3 id="leftDisplay">₹0</h3>
+              </div>
+            </div>
+          </div>
+
+          <div class="card mb-4 p-3 glass">
+            <form id="expenseForm" class="row g-2 align-items-center">
+              <div class="col-md-4">
+                <select id="expenseCategory" class="form-select" required>
+                  <option value="" hidden>Select category</option>
+                  <option>Groceries</option>
+                  <option>Travel</option>
+                  <option>Rent</option>
+                  <option>Entertainment</option>
+                  <option>Electricity</option>
+                  <option>Shopping</option>
+                  <option>Borrow</option>
+                  <option>Others</option>
+                </select>
+              </div>
+
+              <div class="col-md-3">
+                <input id="expenseAmount" type="number" class="form-control" placeholder="Amount" required min="0.01" step="0.01">
+              </div>
+
+              <div class="col-md-3" id="noteWrapper" style="display:none;">
+                <input id="expenseNote" class="form-control" placeholder="Note (required)">
+              </div>
+
+              <div class="col-md-2 d-grid">
+                <button class="btn btn-primary">Add</button>
+              </div>
+            </form>
+          </div>
+
+          <div class="card p-3 glass mb-4">
+            <canvas id="chart" height="120"></canvas>
+
+            <table class="table mt-3" id="expenseTable">
+              <thead><tr><th>Date</th><th>Category</th><th>Note</th><th class="text-end">Amount</th><th></th></tr></thead>
+              <tbody></tbody>
+              <tfoot><tr><th colspan="3" class="text-end">Total</th><th id="tableTotal">₹0</th><th></th></tr></tfoot>
+            </table>
+          </div>
+        </section>
+
+        <!-- PROFILE -->
+        <section id="profileSection" class="d-none">
+          <h3>Profile</h3>
+          <form id="profileForm" class="row g-3">
+            <div class="col-md-6"><label>Display name</label><input id="nameInput" class="form-control" placeholder="Display name"></div>
+            <div class="col-md-6"><label>Mobile number</label><input id="mobileInput" class="form-control" placeholder="Mobile number"></div>
+            <div class="col-md-6"><label>Email</label><input id="emailInput" class="form-control" placeholder="Email"></div>
+            <div class="col-md-6"><label>Address</label><input id="addressInput" class="form-control" placeholder="Address"></div>
+            <div class="col-md-6"><label>Job</label>
+              <select id="jobInput" class="form-select"><option value="" hidden>Select job</option><option>Student</option><option>Worker</option><option>Others</option></select></div>
+            <div class="col-md-6"><label>Source of income</label>
+              <select id="incomeInput" class="form-select"><option value="" hidden>Select source</option><option>Pocket Money</option><option>Salary</option><option>Other</option></select></div>
+            <div class="col-md-6"><label>Profile photo</label><input id="photoInput" type="file" accept="image/*" class="form-control"></div>
+            <div class="col-12 d-grid"><button class="btn btn-primary">Save Profile</button></div>
+          </form>
+        </section>
+
+        <!-- SETTINGS -->
+        <section id="settingsSection" class="d-none">
+          <h3>Settings</h3>
+          <div class="card p-3 glass">
+            <div class="row g-3">
+              <div class="col-md-6"><label>Theme</label><select id="themeSelect" class="form-select"><option value="light">Light</option><option value="dark">Dark</option></select></div>
+              <div class="col-md-6"><label>Monthly Salary (₹)</label><input id="salaryInput" type="number" class="form-control" placeholder="Enter monthly salary"></div>
+              <div class="col-12 d-grid"><button id="saveSettings" class="btn btn-primary">Save Settings</button></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- BILL SPLITTER (Advanced) -->
+        <section id="billSection" class="d-none">
+          <h3>Bill Splitter</h3>
+
+          <div class="card p-4 glass mb-3">
+            <div class="row g-3">
+              <div class="col-md-4">
+                <label>Total Bill (₹)</label>
+                <input id="billTotal" type="number" class="form-control" placeholder="Total amount">
+              </div>
+
+              <div class="col-md-4">
+                <label>How many people?</label>
+                <input id="billCount" type="number" class="form-control" placeholder="e.g., 3">
+              </div>
+
+              <div class="col-md-4 d-grid">
+                <button id="createGroup" class="btn btn-primary mt-4">Create people</button>
+              </div>
+            </div>
+          </div>
+
+          <div id="peopleEditor" class="card p-3 glass mb-3" style="display:none;">
+            <h5>People</h5>
+            <div id="peopleList"></div>
+
+            <div class="d-flex gap-2 mt-3">
+              <button id="equalSplitBtn" class="btn btn-outline-primary">Equal split</button>
+              <button id="computeSplitBtn" class="btn btn-primary">Compute split</button>
+              <button id="saveSplitAll" class="btn btn-success">Save each share as expense</button>
+            </div>
+          </div>
+
+          <div id="splitResultCard" class="card p-3 glass" style="display:none;">
+            <h5>Split result</h5>
+            <table class="table">
+              <thead><tr><th>Person</th><th class="text-end">Amount (₹)</th><th>Note</th></tr></thead>
+              <tbody id="splitTable"></tbody>
+            </table>
+            <div class="d-flex gap-2 mt-2">
+              <button id="exportSplitCsv" class="btn btn-outline-secondary">Export Split CSV</button>
+              <button id="exportSplitPdf" class="btn btn-outline-primary">Export Split PDF</button>
+              <button id="shareWhatsApp" class="btn btn-outline-success">Share via WhatsApp</button>
+            </div>
+          </div>
+
+          <hr class="my-3">
+
+          <h5>Saved splits (history)</h5>
+          <div id="savedSplits"></div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

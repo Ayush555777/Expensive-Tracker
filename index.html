@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Login — Expense Tracker</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="page-login">
+
+<main class="auth-viewport">
+  <div class="auth-card glass shadow-lg">
+    <div class="d-flex align-items-center gap-3 mb-3">
+      <div class="brand-logo">💼</div>
+      <div>
+        <h2 class="m-0">Expense Tracker</h2>
+        <small class="muted">Smart, local & secure — demo</small>
+      </div>
+    </div>
+
+    <form id="loginForm" novalidate>
+      <div class="mb-2">
+        <label class="form-label">Email</label>
+        <input id="loginEmail" type="email" class="form-control" required>
+        <div class="invalid-feedback">Please enter a valid email.</div>
+      </div>
+
+      <div class="mb-2">
+        <label class="form-label">Password</label>
+        <div class="input-group">
+          <input id="loginPassword" type="password" class="form-control" required minlength="4">
+          <button type="button" id="toggleLoginPwd" class="btn btn-outline-secondary" aria-label="Toggle password">
+            <i class="fa fa-eye"></i>
+          </button>
+        </div>
+        <div class="form-text">Demo admin: <code>admin@tracker.com</code> / <code>admin123</code></div>
+      </div>
+
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <div><input id="remember" type="checkbox"> <label for="remember">Remember</label></div>
+        <a href="#" id="openForgot">Forgot?</a>
+      </div>
+
+      <button class="btn btn-primary w-100 mb-2">Login</button>
+
+      <div class="text-center">
+        <small>Don't have an account? <a href="signup.html">Sign up</a></small>
+      </div>
+    </form>
+  </div>
+</main>
+
+<!-- Forgot modal -->
+<div id="forgotModal" class="modal-overlay d-none">
+  <div class="modal-card glass slide-up">
+    <h5>Reset password</h5>
+    <div id="forgotStage1">
+      <p class="muted">Enter your registered email. (Demo: code shown on-screen)</p>
+      <input id="forgotEmail" class="form-control mb-2" placeholder="you@domain.com">
+      <div class="d-flex gap-2">
+        <button id="sendCode" class="btn btn-primary flex-fill">Send code</button>
+        <button id="cancelForgot" class="btn btn-outline-secondary flex-fill">Cancel</button>
+      </div>
+    </div>
+
+    <div id="forgotStage2" class="d-none">
+      <p class="muted">Enter code and new password</p>
+      <input id="resetCode" class="form-control mb-2" placeholder="6-digit code">
+      <div class="input-group mb-2">
+        <input id="newPassword" type="password" class="form-control" placeholder="New password">
+        <button id="toggleResetPwd" type="button" class="btn btn-outline-secondary"><i class="fa fa-eye"></i></button>
+      </div>
+      <button id="resetPasswordBtn" class="btn btn-success w-100">Reset</button>
+      <div id="demoCode" class="mt-2 muted small"></div>
+    </div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

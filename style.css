@@ -1,0 +1,64 @@
+/* style.css - polished UI for merged app */
+
+/* fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+*{box-sizing:border-box}
+body{font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;margin:0;background:linear-gradient(180deg,#e6eefc,#f6f8ff);min-height:100vh;color:#0b1220}
+
+/* small helpers */
+.muted{color:#6b7280}
+.hidden{display:none!important}
+
+/* auth */
+.auth-viewport{height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+.auth-card{width:100%;max-width:480px;padding:24px;border-radius:14px;background:rgba(255,255,255,0.9);box-shadow:0 20px 50px rgba(10,12,30,0.08)}
+.brand-logo{font-size:28px;padding:8px 12px;border-radius:10px;background:linear-gradient(90deg,#7b5fff,#a17bff);color:white;display:inline-block}
+
+/* modal */
+.modal-overlay{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(10,12,20,0.45);z-index:2000}
+.modal-card{width:100%;max-width:520px;padding:18px;border-radius:12px;background:rgba(255,255,255,0.95);}
+
+/* glass */
+.glass{background:rgba(255,255,255,0.6);backdrop-filter:blur(8px);border-radius:12px;border:1px solid rgba(255,255,255,0.6)}
+.card.glass{border-radius:12px}
+
+/* app shell */
+.app-shell{display:flex;height:100vh;overflow:hidden}
+.sidebar{width:260px;padding:18px;border-right:1px solid rgba(11,17,32,0.04);display:flex;flex-direction:column;gap:12px;background:transparent}
+.user-avatar{width:84px;height:84px;border-radius:50%;object-fit:cover;border:3px solid rgba(255,255,255,0.6);box-shadow:0 6px 18px rgba(10,12,30,0.08)}
+.sidebar-nav .nav-link{padding:10px 12px;border-radius:8px;color:#334155;text-decoration:none;border:1px solid transparent;display:block}
+.sidebar-nav .nav-link.active{background:linear-gradient(135deg,#eef2ff,#f5f0ff);color:#6b21a8}
+
+/* info cards */
+.info-card{padding:18px;border-radius:12px;color:white;box-shadow:0 8px 30px rgba(11,12,30,0.06)}
+.gradient-blue{background:linear-gradient(135deg,#4facfe,#00f2fe)}
+.gradient-pink{background:linear-gradient(135deg,#ff758c,#ff7eb3)}
+.gradient-green{background:linear-gradient(135deg,#43e97b,#38f9d7)}
+
+/* animations */
+.animate-fade-up{opacity:0;transform:translateY(10px);animation:fadeUp .6s forwards}
+.animate-fade-up.delay-1{animation-delay:.08s}
+.animate-fade-up.delay-2{animation-delay:.16s}
+@keyframes fadeUp{to{opacity:1;transform:none}}
+.info-card.pop{transform:scale(1.03);transition:transform .18s ease}
+
+/* table */
+.table{background:transparent}
+.table thead th{border-bottom:1px solid rgba(11,12,30,0.06)}
+
+/* toast style (custom) */
+.custom-toast{box-shadow:0 6px 20px rgba(0,0,0,0.25)}
+
+/* responsive */
+.main-content{flex:1;overflow:auto;background:transparent}
+.container-fluid{max-width:1100px;margin:0 auto;padding-top:20px}
+@media (max-width:900px){
+  .app-shell{flex-direction:column}
+  .sidebar{width:100%;flex-direction:row;align-items:center;gap:8px;padding:8px;overflow:auto}
+  .sidebar-nav{flex-direction:row;gap:8px}
+  .user-avatar{width:48px;height:48px}
+}
+
+/* dark */
+body.dark{background:linear-gradient(180deg,#071022,#0b1220);color:#e6eefc}
+body.dark .glass{background:rgba(18,20,30,0.45);border-color:rgba(255,255,255,0.03)}
